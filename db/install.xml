@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMLDB PATH="local/oauth2_server/db" VERSION="2025082300" COMMENT="Install clients table for OAuth2 server">
+
+	<TABLES>
+		<TABLE NAME="local_oauth2_server_clients" COMMENT="OAuth2 Server clients">
+			<FIELDS>
+				<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+				<FIELD NAME="client_id" TYPE="char" LENGTH="80" NOTNULL="true"/>
+				<FIELD NAME="client_secret" TYPE="char" LENGTH="80" NOTNULL="true"/>
+				<FIELD NAME="redirect_uri" TYPE="text" NOTNULL="true"/>
+				<FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true"/>
+			</FIELDS>
+			<KEYS>
+				<KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+				<KEY NAME="client_id_unique" TYPE="unique" FIELDS="client_id"/>
+			</KEYS>
+		</TABLE>
+
+		<TABLE NAME="local_oauth2_server_access_tokens" COMMENT="OAuth2 Server access tokens">
+			<FIELDS>
+				<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+				<FIELD NAME="access_token" TYPE="char" LENGTH="40" NOTNULL="true"/>
+				<FIELD NAME="client_id" TYPE="char" LENGTH="80" NOTNULL="true"/>
+				<FIELD NAME="user_id" TYPE="int" LENGTH="10" NOTNULL="false"/>
+				<FIELD NAME="expires" TYPE="int" LENGTH="10" NOTNULL="true"/>
+				<FIELD NAME="scope" TYPE="text" NOTNULL="false"/>
+			</FIELDS>
+
+			<KEYS>
+				<KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+			</KEYS>
+		</TABLE>
+
+		<TABLE NAME="local_oauth2_server_auth_codes" COMMENT="OAuth2 authorization codes">
+			<FIELDS>
+				<FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+				<FIELD NAME="auth_code" TYPE="char" LENGTH="40" NOTNULL="true"/>
+				<FIELD NAME="client_id" TYPE="char" LENGTH="80" NOTNULL="true"/>
+				<FIELD NAME="user_id" TYPE="int" LENGTH="10" NOTNULL="true"/>
+				<FIELD NAME="redirect_uri" TYPE="text" NOTNULL="true"/>
+				<FIELD NAME="expires" TYPE="int" LENGTH="10" NOTNULL="true"/>
+				<FIELD NAME="scope" TYPE="text" NOTNULL="false"/>
+			</FIELDS>
+
+			<KEYS>
+				<KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+			</KEYS>
+		</TABLE>
+	</TABLES>
+
+</XMLDB>
