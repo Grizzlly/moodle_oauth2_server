@@ -33,11 +33,36 @@ if (!$user_id) {
 global $DB;
 $user = $DB->get_record('user', ['id' => $user_id, 'deleted' => 0], '*', MUST_EXIST);
 
-header('Content-Type: application/json');
-echo json_encode([
-    'sub' => $user->id,
-    'username' => $user->username,
-    'email' => $user->email,
+$fields = $DB->get_records('user_info_field', null, 'id ASC', 'id, shortname');
+$customdata = [];
+
+if ($fields) {
+    list($insql, $params) = $DB->get_in_or_equal(array_keys($fields));
+    $params[] = $user_id;
+
+    $records = $DB->get_records_select(
+        'user_info_data',
+        "fieldid $insql AND userid = ?",
+        $params,
+        '',
+        'fieldid, data'
+    );
+
+    foreach ($records as $record) {
+        if (isset($fields[$record->fieldid])) {
+            $shortname = $fields[$record->fieldid]->shortname;
+            $customdata[$shortname] = $record->data;
+        }
+    }
+}
+
+$output = array_merge([
+    'sub'       => $user->id,
+    'username'  => $user->username,
+    'email'     => $user->email,
     'firstname' => $user->firstname,
-    'lastname' => $user->lastname
-]);
+    'lastname'  => $user->lastname
+], $customdata);
+
+header('Content-Type: application/json');
+echo json_encode($output);
